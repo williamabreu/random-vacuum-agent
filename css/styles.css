@@ -1,32 +1,31 @@
 @import url("../import/bootstrap.min.css");
 
-footer{
+footer {
     background-color: #555;
     color: white;
     padding: 15px;
 }
 
-h3{
-    padding: 1em;
+h1 {
+    text-align: center;
+    font-size: 28px;
 }
 
-.dl-horizontal dt
-{
+.dl-horizontal dt {
     padding:10px;
     white-space: normal;
 }
-.dl-horizontal dd
-{
+.dl-horizontal dd {
     padding:10px;
     white-space: normal;
 }
 
-pre{
+pre {
 	margin-top:20px;
 	margin-bottom:20px;
 }
 
-.navbar-inverse{
+.navbar-inverse {
   border-radius: 0;
 }
 
