@@ -7,6 +7,7 @@
    Chapter 2 has minimal AI and is mostly animations. */
 
 const SIZE = 100;
+const Y_SPACE = 120;
 const colors = {
     perceptBackground: 'hsl(240,10%,85%)',
     perceptHighlight: 'hsl(60,100%,90%)',
@@ -17,11 +18,11 @@ const colors = {
 
 /* Position Mapping */
 function xPosition(floorNumber) {
-    return {0: 20, 1: 170, 2: 170, 3: 20}[floorNumber];
+    return {0: 60, 1: 320, 2: 320, 3: 60}[floorNumber];
 }
 
 function yPosition(floorNumber) {
-    return {0: 450, 1: 450, 2: 225, 3: 225}[floorNumber] - 120;
+    return {0: 420, 1: 420, 2: 200, 3: 200}[floorNumber];
 }
 
 
@@ -35,7 +36,7 @@ function makeDiagram(selector) {
 
     diagram.robot = diagram.root.append('g')
         .attr('class', 'robot')
-        .style('transform', `translate(${xPosition(world.location)}px,${yPosition(world.location)}px)`);
+        .style('transform', `translate(${xPosition(world.location)}px,${yPosition(world.location)-Y_SPACE}px)`);
     diagram.robot.append('rect')
         .attr('width', SIZE)
         .attr('height', SIZE)
@@ -56,25 +57,14 @@ function makeDiagram(selector) {
             .attr('class', 'clean floor') // for css
             .attr('width', SIZE)
             .attr('height', SIZE/4)
-            .attr('stroke', 'black');
+            .attr('stroke', 'black')
+            .attr('x', xPosition(floorNumber))
+            .attr('y', yPosition(floorNumber));
             // .on('click', function() {
             //     world.markFloorDirty(floorNumber);
             //     diagram.floors[floorNumber].attr('class', 'dirty floor');
             // });
     }
-
-    diagram.floors[0]
-        .attr('x', 20)
-        .attr('y', 450);
-    diagram.floors[1]
-        .attr('x', 170)
-        .attr('y', 450);
-    diagram.floors[2]
-        .attr('x', 170)
-        .attr('y', 225);
-    diagram.floors[3]
-        .attr('x', 20)
-        .attr('y', 225);
 
     return diagram;
 }
@@ -91,7 +81,7 @@ function renderWorld(diagram) {
     for (let floorNumber = 0; floorNumber < diagram.world.floors.length; floorNumber++) {
         diagram.floors[floorNumber].attr('class', diagram.world.floors[floorNumber].dirty? 'dirty floor' : 'clean floor');
     }
-    diagram.robot.style('transform', `translate(${xPosition(diagram.world.location)}px,${yPosition(diagram.world.location)}px)`);
+    diagram.robot.style('transform', `translate(${xPosition(diagram.world.location)}px,${yPosition(diagram.world.location)-Y_SPACE}px)`);
 }
 
 function renderAgentPercept(diagram, dirty) {
