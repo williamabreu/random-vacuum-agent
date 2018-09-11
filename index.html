@@ -13,7 +13,8 @@
         .robot { transition: transform 2.0s; }
         .floor { fill: white; }
         .floor.clean { fill: hsl(240,10%,90%); transition: fill 2.0s; }
-        .floor.dirty { fill: hsl(0,50%,50%); transition: fill 0.1s; }
+        .floor.dirty { fill: hsl(22, 71%, 29%); transition: fill 0.1s; }
+        .floor.wet { fill: hsl(202, 80%, 40%); transition: fill 0.1s; }
     </style>
   </head>
   <body oncontextmenu="return false;">
@@ -28,5 +29,6 @@
     </div>
     <script type="text/javascript" src="./agent/cleaningRobot.js"></script>
     <script type="text/javascript" src="./agent/c_cleaningRobot.js"></script>
+    <script type="text/javascript" src="./agent/keyboardControl.js"></script>
   </body>
 </html>
