@@ -90,8 +90,17 @@ function makeDiagram(selector) {
 
 function renderWorld(diagram) {
     for (let floorNumber = 0; floorNumber < diagram.world.floors.length; floorNumber++) {
-        diagram.floors[floorNumber].attr('class', diagram.world.floors[floorNumber].dirty? 'dirty floor' : 'clean floor');
-        diagram.floors[floorNumber].attr('class', diagram.world.floors[floorNumber].wet? 'wet floor' : 'clean floor');
+        let currentState;
+        if (diagram.world.floors[floorNumber].dirty) {
+            currentState = 'dirty floor';
+        }
+        else if (diagram.world.floors[floorNumber].wet) {
+            currentState = 'wet floor';
+        }
+        else {
+            currentState = 'clean floor';
+        }        
+        diagram.floors[floorNumber].attr('class', currentState);
     }
     diagram.robot.style('transform', `translate(${xPosition(diagram.world.location)}px,${yPosition(diagram.world.location)-Y_SPACE}px)`);
 }
@@ -134,6 +143,7 @@ function makeAgentControlledDiagram() {
         renderWorld(diagram);
         renderAgentPercept(diagram, perceptSolid, perceptLiquid);
         renderAgentAction(diagram, action);
+        randomState();
     }
 
     function randomState() {
@@ -141,19 +151,22 @@ function makeAgentControlledDiagram() {
             let max = 3, min = 0;
             let state = Math.floor(Math.random() * (max - min + 1)) + min;
             let floorNumber = Math.floor(Math.random() * (max - min + 1)) + min;
-            if (state % 2 == 0) {
-                diagram.world.markFloorDirty(floorNumber);
-                diagram.floors[floorNumber].attr('class', 'dirty floor');
-            }
-            else {
-                diagram.world.markFloorWet(floorNumber);
-                diagram.floors[floorNumber].attr('class', 'wet floor');
+            if (floorNumber != diagram.world.location) {
+                if (state % 2 == 0) {
+                    if (diagram.world.markFloorDirty(floorNumber)) {
+                        diagram.floors[floorNumber].attr('class', 'dirty floor');
+                    }
+                }
+                else {
+                    if (diagram.world.markFloorWet(floorNumber)) {
+                        diagram.floors[floorNumber].attr('class', 'wet floor');
+                    }
+                }
             }
         }
     }
 
     setInterval(update, STEP_TIME_MS);
-    setInterval(randomState, STEP_TIME_MS * 2);
 }
 
 
