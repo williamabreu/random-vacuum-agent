@@ -66,12 +66,14 @@ function makeDiagram(selector) {
             .attr('x', xPosition(floorNumber))
             .attr('y', yPosition(floorNumber))
             .on('click', function() {
-                world.markFloorDirty(floorNumber);
-                diagram.floors[floorNumber].attr('class', 'dirty floor');
+                if (world.markFloorDirty(floorNumber)) {
+                    diagram.floors[floorNumber].attr('class', 'dirty floor');
+                }
             })
             .on('contextmenu', function() {
-                world.markFloorWet(floorNumber);
-                diagram.floors[floorNumber].attr('class', 'wet floor');
+                if (world.markFloorWet(floorNumber)) {
+                    diagram.floors[floorNumber].attr('class', 'wet floor');
+                }
             });
     }
 

@@ -12,12 +12,20 @@ class World {
     markFloorDirty(floorNumber) {
         if (!this.floors[floorNumber].wet) {
             this.floors[floorNumber].dirty = true;
+            return true;
+        }
+        else {
+            return false;
         }
     }
 
     markFloorWet(floorNumber) {
         if (!this.floors[floorNumber].dirty) {
             this.floors[floorNumber].wet = true;
+            return true;
+        }
+        else {
+            return false;
         }
     }
 
