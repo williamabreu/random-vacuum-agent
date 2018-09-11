@@ -8,12 +8,17 @@
 
 const SIZE = 100;
 const Y_SPACE = 120;
-const colors = {
-    perceptBackground: 'hsl(240,10%,85%)',
-    perceptHighlight: 'hsl(60,100%,90%)',
-    actionBackground: 'hsl(0,0%,100%)',
-    actionHighlight: 'hsl(150,50%,80%)'
-};
+var AUTO = true;
+
+function switchAuto() {
+    AUTO = !AUTO;
+}
+// const colors = {
+//     perceptBackground: 'hsl(240,10%,85%)',
+//     perceptHighlight: 'hsl(60,100%,90%)',
+//     actionBackground: 'hsl(0,0%,100%)',
+//     actionHighlight: 'hsl(150,50%,80%)'
+// };
 
 
 /* Position Mapping */
@@ -84,18 +89,27 @@ function makeDiagram(selector) {
 function renderWorld(diagram) {
     for (let floorNumber = 0; floorNumber < diagram.world.floors.length; floorNumber++) {
         diagram.floors[floorNumber].attr('class', diagram.world.floors[floorNumber].dirty? 'dirty floor' : 'clean floor');
+        diagram.floors[floorNumber].attr('class', diagram.world.floors[floorNumber].wet? 'wet floor' : 'clean floor');
     }
     diagram.robot.style('transform', `translate(${xPosition(diagram.world.location)}px,${yPosition(diagram.world.location)-Y_SPACE}px)`);
 }
 
 function renderAgentPercept(diagram, dirty, wet) {
-    let perceptLabelSolid = {false: "It's clean", true: "It's dirty"}[dirty];
-    let perceptLabelLiquid = {false: "It's clean", true: "It's wet"}[wet];
-    diagram.perceptText.text(perceptLabelSolid + '\n' + perceptLabelLiquid);
+    let perceptLabel;
+    if (dirty) {
+        perceptLabel = "It's dirty";
+    }
+    else if (wet) {
+        perceptLabel = "It's wet";
+    }
+    else {
+        perceptLabel = "It's clean";
+    } 
+    diagram.perceptText.text(perceptLabel);
 }
 
 function renderAgentAction(diagram, action) {
-    let actionLabel = {null: 'Waiting', 'SUCK': 'Vacuuming', 'WET': 'Drying', 'LEFT': 'Going left', 'RIGHT': 'Going right', 'UP': 'Going up', 'DOWN': 'Going down'}[action];
+    let actionLabel = {null: 'Waiting', 'SUCK': 'Vacuuming', 'DRY': 'Drying', 'LEFT': 'Going left', 'RIGHT': 'Going right', 'UP': 'Going up', 'DOWN': 'Going down'}[action];
     diagram.actionText.text(actionLabel);
 }
 
@@ -120,17 +134,24 @@ function makeAgentControlledDiagram() {
         renderAgentAction(diagram, action);
     }
 
-    function randomDirty() {
-        let max = 3, min = 0;
-        let floorNumber = Math.floor(Math.random() * (max - min + 1)) + min;
-        diagram.world.markFloorDirty(floorNumber);
-        diagram.floors[floorNumber].attr('class', 'dirty floor');
+    function randomState() {
+        if (AUTO) {
+            let max = 3, min = 0;
+            let state = Math.floor(Math.random() * (max - min + 1)) + min;
+            let floorNumber = Math.floor(Math.random() * (max - min + 1)) + min;
+            if (state % 2 == 0) {
+                diagram.world.markFloorDirty(floorNumber);
+                diagram.floors[floorNumber].attr('class', 'dirty floor');
+            }
+            else {
+                diagram.world.markFloorWet(floorNumber);
+                diagram.floors[floorNumber].attr('class', 'wet floor');
+            }
+        }
     }
 
-    // update();
     setInterval(update, STEP_TIME_MS);
-    // randomDirty();
-    // setInterval(randomDirty, STEP_TIME_MS * 1.5);
+    setInterval(randomState, STEP_TIME_MS * 2);
 }
 
 
