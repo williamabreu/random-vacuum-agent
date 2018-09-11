@@ -76,10 +76,3 @@ function reflexVacuumAgent(world) {
         }         
     }
 }
-
-// Rules are defined in data, in a table indexed by [location][dirty]
-// function tableVacuumAgent(world, table) {
-//     let location = world.location;
-//     let dirty = world.floors[location].dirty ? 1 : 0;
-//     return table[location][dirty];
-// }
