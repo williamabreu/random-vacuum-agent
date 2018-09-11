@@ -13,12 +13,6 @@ var AUTO = true;
 function switchAuto() {
     AUTO = !AUTO;
 }
-// const colors = {
-//     perceptBackground: 'hsl(240,10%,85%)',
-//     perceptHighlight: 'hsl(60,100%,90%)',
-//     actionBackground: 'hsl(0,0%,100%)',
-//     actionHighlight: 'hsl(150,50%,80%)'
-// };
 
 
 /* Position Mapping */
@@ -131,7 +125,7 @@ function renderAgentAction(diagram, action) {
    the page. */
 
 const STEP_TIME_MS = 2500;
-function makeAgentControlledDiagram() {
+function main() {
     let diagram = makeDiagram('#agent-controlled-diagram svg');
 
     function update() {
@@ -168,136 +162,3 @@ function makeAgentControlledDiagram() {
 
     setInterval(update, STEP_TIME_MS);
 }
-
-
-/* Control the diagram by letting the reader choose the action. This
-   diagram is tricky.
- 
-   1. If there's an animation already playing and the reader chooses
-      an action then *wait* for the animation to finish playing. While
-      waiting the reader may choose a different action. Replace the
-      previously chosen action with the new one. (An alternative
-      design would be to queue up all the actions.)
-   2. If there's not an animation already playing then when the reader
-      chooses an action then run it right away, without waiting.
-   3. Show the connection between the percept and the resulting action
-      by highlighting the percepts in the accompanying table, pausing,
-      and then highlighting the action.
-*/
-// function makeReaderControlledDiagram() {
-//     let diagram = makeDiagram('#reader-controlled-diagram svg');
-//     let nextAction = null;
-//     let animating = false; // either false or a setTimeout intervalID
-
-//     function makeButton(action, label, x) {
-//         let button = d3.select('#reader-controlled-diagram .buttons')
-//             .append('button')
-//             .attr('class', 'btn btn-default')
-//             .style('position', 'absolute')
-//             .style('left', x + 'px')
-//             .style('width', '100px')
-//             .text(label)
-//             .on('click', () => {
-//                 setAction(action);
-//                 updateButtons();
-//             });
-//         button.action = action;
-//         return button;
-//     }
-
-//     let buttons = [
-//         makeButton('LEFT', 'Move left', 150),
-//         makeButton('SUCK', 'Vacuum', 300),
-//         makeButton('RIGHT', 'Move right', 450),
-//     ];
-
-//     function updateButtons() {
-//         for (let button of buttons) {
-//             button.classed('btn-warning', button.action == nextAction);
-//         }
-//     }
-
-//     function setAction(action) {
-//         nextAction = action;
-//         if (!animating) { update(); }
-//     }
-    
-//     function update() {
-//         let percept = diagram.world.floors[diagram.world.location].dirty;
-//         if (nextAction !== null) {
-//             diagram.world.simulate(nextAction);
-//             renderWorld(diagram);
-//             renderAgentPercept(diagram, percept);
-//             renderAgentAction(diagram, nextAction);
-//             nextAction = null;
-//             updateButtons();
-//             animating = setTimeout(update, STEP_TIME_MS);
-//         } else {
-//             animating = false;
-//             renderWorld(diagram);
-//             renderAgentPercept(diagram, percept);
-//             renderAgentAction(diagram, null);
-//         }
-//     }
-// }
-
-
-/* Control the diagram by letting the reader choose the rules that
-   the AI agent should follow. The animation flow is similar to the
-   first agent controlled diagram but there is an additional table
-   UI that lets the reader view the percepts and actions being followed
-   as well as change the rules followed by the agent. */
-// function makeTableControlledDiagram() {
-//     let diagram = makeDiagram('#table-controlled-diagram svg');
-
-//     function update() {
-//         let table = getRulesFromPage();
-//         let location = diagram.world.location;
-//         let percept = diagram.world.floors[location].dirty;
-//         let action = tableVacuumAgent(diagram.world, table);
-//         diagram.world.simulate(action);
-//         renderWorld(diagram);
-//         renderAgentPercept(diagram, percept);
-//         renderAgentAction(diagram, action);
-//         showPerceptAndAction(location, percept, action);
-//     }
-//     update();
-//     setInterval(update, STEP_TIME_MS);
-    
-//     function getRulesFromPage() {
-//         let table = d3.select("#table-controlled-diagram table");
-//         let left_clean = table.select("[data-action=left-clean] select").node().value;
-//         let left_dirty = table.select("[data-action=left-dirty] select").node().value;
-//         let right_clean = table.select("[data-action=right-clean] select").node().value;
-//         let right_dirty = table.select("[data-action=right-dirty] select").node().value;
-//         return [[left_clean, left_dirty], [right_clean, right_dirty]];
-//     }
-
-//     function showPerceptAndAction(location, percept, action) {
-//         let locationMarker = location? 'right' : 'left';
-//         let perceptMarker = percept? 'dirty' : 'clean';
-        
-//         d3.selectAll('#table-controlled-diagram th')
-//             .filter(function() {
-//                 let marker = d3.select(this).attr('data-input');
-//                 return marker == perceptMarker || marker == locationMarker;
-//             })
-//             .style('background-color', (d) => colors.perceptHighlight);
-        
-//         d3.selectAll('#table-controlled-diagram td')
-//             .style('padding', '5px')
-//             .filter(function() {
-//                 let marker = d3.select(this).attr('data-action');
-//                 return marker == locationMarker + '-' + perceptMarker;
-//             })
-//             .transition().duration(0.05 * STEP_TIME_MS)
-//             .style('background-color', colors.actionHighlight)
-//             .transition().duration(0.9 * STEP_TIME_MS)
-//             .style('background-color', colors.actionBackground);
-//     }
-// }
-
-
-makeAgentControlledDiagram();
-// makeReaderControlledDiagram();
-// makeTableControlledDiagram();
