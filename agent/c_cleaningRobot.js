@@ -8,10 +8,16 @@
 
 const SIZE = 100;
 const Y_SPACE = 120;
-var AUTO = true;
+var AUTO_RANDOM_STATE = true;
+var ALLOW_MANUAL_INPUT = false;
 
-function switchAuto() {
-    AUTO = !AUTO;
+/* Control configurations */
+function switchAutoRandomState() {
+    AUTO_RANDOM_STATE = !AUTO_RANDOM_STATE;
+}
+
+function switchAllowManualInput() {
+    ALLOW_MANUAL_INPUT = !ALLOW_MANUAL_INPUT;
 }
 
 
@@ -96,7 +102,9 @@ function renderWorld(diagram) {
         }        
         diagram.floors[floorNumber].attr('class', currentState);
     }
-    diagram.robot.style('transform', `translate(${xPosition(diagram.world.location)}px,${yPosition(diagram.world.location)-Y_SPACE}px)`);
+    if (!ALLOW_MANUAL_INPUT) {
+        diagram.robot.style('transform', `translate(${xPosition(diagram.world.location)}px,${yPosition(diagram.world.location)-Y_SPACE}px)`);
+    }
 }
 
 function renderAgentPercept(diagram, dirty, wet) {
@@ -126,7 +134,7 @@ function renderAgentAction(diagram, action) {
 
 const STEP_TIME_MS = 2500;
 function main() {
-    let diagram = makeDiagram('#agent-controlled-diagram svg');
+    var diagram = makeDiagram('#agent-controlled-diagram svg');
 
     function update() {
         let location = diagram.world.location;
@@ -141,7 +149,7 @@ function main() {
     }
 
     function randomState() {
-        if (AUTO) {
+        if (AUTO_RANDOM_STATE) {
             let max = 3, min = 0;
             let state = Math.floor(Math.random() * (max - min + 1)) + min;
             let floorNumber = Math.floor(Math.random() * (max - min + 1)) + min;
@@ -161,4 +169,6 @@ function main() {
     }
 
     setInterval(update, STEP_TIME_MS);
+
+    return diagram;
 }
